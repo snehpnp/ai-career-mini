@@ -44,22 +44,24 @@ export async function callGroq(prompt){
 
   return chat.choices[0].message.content;
 }
-
-// ---------------- OLLAMA
 export async function callOllama(prompt){
+  try{
+    const res = await fetch(
+      "http://localhost:11434/api/chat",
+      {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({
+          model:"llama3",
+          messages:[{role:"user",content:prompt}]
+        })
+      }
+    );
 
-  const res = await fetch(
-    "http://localhost:11434/api/chat",
-    {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({
-        model:"llama3",
-        messages:[{role:"user",content:prompt}]
-      })
-    }
-  );
-
-  const data = await res.json();
-  return data.message.content;
+    const data = await res.json();
+    return data.message.content || "Local AI unavailable.";
+  }catch(err){
+    console.log("⚠️ Ollama offline — skipping local AI");
+    return "Local mindset analysis unavailable.";
+  }
 }
