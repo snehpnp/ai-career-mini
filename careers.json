@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Data Analyst",
+    "interest": "tech",
+    "education": "graduate",
+    "skills": ["excel", "sql", "analysis"]
+  },
+  {
+    "name": "Graphic Designer",
+    "interest": "creative",
+    "education": "any",
+    "skills": ["design", "creativity"]
+  },
+  {
+    "name": "Digital Marketer",
+    "interest": "business",
+    "education": "any",
+    "skills": ["marketing", "seo"]
+  }
+]
