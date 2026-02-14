@@ -1,18 +1,45 @@
 import { callOpenAI, callGroq, callOllama } from "./ai.js";
 
-export async function runOrchestrator(user){
+// 🔥 SMART AI FAILOVER FUNCTION
+async function smartAI(prompt) {
+  // // 1️⃣ TRY OPENAI
+  let res;
+  res = await callOpenAI(prompt);
+  if (res) {
+    console.log("🧠 OpenAI used");
+    return res;
+  }
 
-// ----------------------
-// AI #1 — Career Strategist (OPENAI)
-// ----------------------
-const strategistPrompt = `
+  // 2️⃣ FALLBACK GROQ
+  res = await callGroq(prompt);
+  if (res) {
+    console.log("⚡ Groq fallback used");
+    return res;
+  }
+
+  // 3️⃣ LAST OLLAMA
+  res = await callOllama(prompt);
+  if (res) {
+    console.log("🧱 Ollama fallback used");
+    return res;
+  }
+
+  console.log("🔥 All AI failed");
+  return "";
+}
+
+export async function runOrchestrator(user) {
+  // ----------------------
+  // AI #1 — Career Strategist Prompt
+  // ----------------------
+  const strategistPrompt = `
 You are a senior career strategist.
 
 User Profile:
 ${JSON.stringify(user)}
 
 History:
-${JSON.stringify(user.history||[])}
+${JSON.stringify(user.history || [])}
 
 Return ONLY JSON:
 {
@@ -24,56 +51,83 @@ Return ONLY JSON:
 }
 `;
 
-const strategistText = await callOpenAI(strategistPrompt);
-
-const strategist = JSON.parse(
-  strategistText.replace(/```json/g,"").replace(/```/g,"")
-);
-
-// ----------------------
-// AI #2 — Skill Analyzer (GROQ FAST)
-// ----------------------
-const skillPrompt = `
+  // ----------------------
+  // AI #2 — Skill Analyzer Prompt
+  // ----------------------
+  const skillPrompt = `
 Analyse strengths, missing skills and growth areas:
 ${JSON.stringify(user)}
 `;
 
-const skillAnalysis = await callGroq(skillPrompt);
-
-// ----------------------
-// AI #3 — Risk Checker (OLLAMA LOCAL)
-// ----------------------
-const riskPrompt = `
+  // ----------------------
+  // AI #3 — Risk Checker Prompt
+  // ----------------------
+  const riskPrompt = `
 Analyse mindset risks honestly:
 ${JSON.stringify(user)}
 `;
 
-const riskAdvice = await callOllama(riskPrompt);
+  // 🚀🔥 PARALLEL EXECUTION (SUPER FAST)
+  const strategistPromise = smartAI(strategistPrompt);
+  const skillPromise = smartAI(skillPrompt);
+  const riskPromise = smartAI(riskPrompt);
 
-// ----------------------
-// AI #4 — FINAL FORMATTER (OPENAI)
-// ----------------------
-const formatterPrompt = `
-Combine everything into powerful roadmap.
+  const [strategistText, skillAnalysis, riskAdvice] = await Promise.all([
+    strategistPromise,
+    skillPromise,
+    riskPromise,
+  ]);
+
+  // ----------------------
+  // SAFE JSON PARSE
+  // ----------------------
+  let strategist = { careers: [] };
+
+  try {
+    strategist = JSON.parse(
+      (strategistText || "").replace(/```json/g, "").replace(/```/g, ""),
+    );
+  } catch (e) {
+    console.log("⚠️ strategist JSON parse failed");
+  }
+
+  // ----------------------
+  // AI #4 — FINAL FORMATTER
+  // ----------------------
+  const formatterPrompt = `
+You are a fast friendly AI mentor.
+
+Write a natural conversational roadmap for the user.
+
+Keep it short, clear, motivational and human-like.
+
+Do NOT use nested JSON or structured data.
 
 Careers:
 ${JSON.stringify(strategist.careers)}
 
-Skill:
+Skill summary:
 ${skillAnalysis}
 
-Risk:
+Risk summary:
 ${riskAdvice}
 
-Return JSON:
+Return ONLY JSON:
 
 {
  "careers":[...same careers...],
- "steps":"deep long roadmap"
+ "steps":"short friendly roadmap text"
 }
 `;
 
-const finalText = await callOpenAI(formatterPrompt);
+  const finalText =
+    (await smartAI(formatterPrompt));
 
-return finalText;
+  return (
+    finalText ||
+    JSON.stringify({
+      careers: strategist.careers || [],
+      steps: "AI fallback roadmap generated.",
+    })
+  );
 }

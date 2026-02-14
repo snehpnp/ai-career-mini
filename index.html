@@ -1,296 +1,342 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Neural AI Career Mentor</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Neural AI Career Mentor</title>
 
-<style>
-body{
-margin:0;
-background:#020617;
-font-family:Arial;
-color:white;
-}
+    <style>
+      body {
+        margin: 0;
+        background: #020617;
+        font-family: Arial;
+        color: white;
+      }
 
-.container{
-max-width:900px;
-margin:auto;
-padding:20px;
-}
+      .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+      }
 
-h2{
-text-align:center;
-color:#38bdf8;
-}
+      h2 {
+        text-align: center;
+        color: #38bdf8;
+      }
 
-.chat{
-height:520px;
-overflow-y:auto;
-background:#010409;
-border-radius:14px;
-padding:15px;
-border:1px solid #1e293b;
-}
+      .chat {
+        height: 520px;
+        overflow-y: auto;
+        background: #010409;
+        border-radius: 14px;
+        padding: 15px;
+        border: 1px solid #1e293b;
+      }
 
-.msg{
-margin:12px 0;
-padding:14px;
-border-radius:12px;
-max-width:75%;
-line-height:1.6;
-}
+      .msg {
+        margin: 12px 0;
+        padding: 14px;
+        border-radius: 12px;
+        max-width: 75%;
+        line-height: 1.6;
+      }
 
-.user{background:#1d4ed8;margin-left:auto;}
-.ai{background:#020617;border-left:4px solid #38bdf8;}
+      .user {
+        background: #1d4ed8;
+        margin-left: auto;
+      }
+      .ai {
+        background: #020617;
+        border-left: 4px solid #38bdf8;
+      }
 
-.card{
-background:#020617;
-border:1px solid #334155;
-padding:10px;
-margin-top:10px;
-border-radius:10px;
-}
+      .card {
+        background: #020617;
+        border: 1px solid #334155;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 10px;
+      }
 
-.badge{
-background:#38bdf8;
-color:black;
-padding:3px 7px;
-border-radius:6px;
-font-size:12px;
-}
+      .badge {
+        background: #38bdf8;
+        color: black;
+        padding: 3px 7px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
 
-/* CHAT INPUT */
-.chatInput{
-display:none;
-gap:10px;
-margin-top:10px;
-}
+      /* CHAT INPUT */
+      .chatInput {
+        display: none;
+        gap: 10px;
+        margin-top: 10px;
+      }
 
-.chatInput input{
-flex:1;
-padding:12px;
-border-radius:10px;
-border:1px solid #334155;
-background:#020617;
-color:white;
-}
+      .chatInput input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #334155;
+        background: #020617;
+        color: white;
+      }
 
-button{
-padding:12px;
-background:#38bdf8;
-color:black;
-border:none;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-}
+      button {
+        padding: 12px;
+        background: #38bdf8;
+        color: black;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-display:flex;
-justify-content:center;
-align-items:center;
-}
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-.modalBox{
-background:#010409;
-padding:20px;
-border-radius:12px;
-width:400px;
-border:1px solid #1e293b;
-}
+      .modalBox {
+        background: #010409;
+        padding: 20px;
+        border-radius: 12px;
+        width: 400px;
+        border: 1px solid #1e293b;
+      }
 
-input,select,textarea{
-width:100%;
-margin-top:8px;
-padding:10px;
-border-radius:8px;
-border:1px solid #334155;
-background:#020617;
-color:white;
-}
+      input,
+      select,
+      textarea {
+        width: 100%;
+        margin-top: 8px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #334155;
+        background: #020617;
+        color: white;
+      }
 
-.typing{
-color:#94a3b8;
-font-style:italic;
-}
-</style>
-</head>
+      .typing {
+        color: #94a3b8;
+        font-style: italic;
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <h2>🧠 Neural AI Career Mentor</h2>
 
-<div class="container">
+      <div id="chat" class="chat"></div>
 
-<h2>🧠 Neural AI Career Mentor</h2>
+      <!-- ⭐ CHAT INPUT ACTIVE AFTER CAREER RESPONSE -->
+      <div id="chatInputBox" class="chatInput">
+        <input
+          id="chatInput"
+          placeholder="Ask more about skills, roadmap, growth..."
+        />
+        <button onclick="sendChat()">Send</button>
+      </div>
+    </div>
 
-<div id="chat" class="chat"></div>
+    <!-- ⭐ FIRST TIME MODAL -->
+    <div id="modal" class="modal">
+      <div class="modalBox">
+        <h3>Quick Setup</h3>
 
-<!-- ⭐ CHAT INPUT ACTIVE AFTER CAREER RESPONSE -->
-<div id="chatInputBox" class="chatInput">
-<input id="chatInput" placeholder="Ask more about skills, roadmap, growth..."/>
-<button onclick="sendChat()">Send</button>
-</div>
+        <input id="name" placeholder="Your name" />
+        <input id="age" placeholder="Age" />
 
-</div>
+        <select id="education">
+          <option value="graduate">Graduate</option>
+          <option value="postgraduate">Post Graduate</option>
+          <option value="btech">BTech</option>
+        </select>
 
-<!-- ⭐ FIRST TIME MODAL -->
-<div id="modal" class="modal">
-<div class="modalBox">
-<h3>Quick Setup</h3>
+        <input
+          id="interest"
+          placeholder="Interests (tech,gaming,business...)"
+        />
 
-<input id="name" placeholder="Your name"/>
-<input id="age" placeholder="Age"/>
+        <textarea
+          id="goal"
+          rows="2"
+          placeholder="What are you doing now & what you want after 3 years?"
+        ></textarea>
 
-<select id="education">
-<option value="graduate">Graduate</option>
-<option value="postgraduate">Post Graduate</option>
-<option value="btech">BTech</option>
-</select>
+        <button onclick="start()">Start AI Mentor</button>
+      </div>
+    </div>
 
-<input id="interest" placeholder="Interests (tech,gaming,business...)"/>
+    <script>
+      const chat = document.getElementById("chat");
+      const modal = document.getElementById("modal");
+      const chatInputBox = document.getElementById("chatInputBox");
 
-<textarea id="goal" rows="2"
-placeholder="What are you doing now & what you want after 3 years?"></textarea>
+      // ⭐ Smart Context Brain
+      function detectContext(text) {
+        text = text.toLowerCase();
 
-<button onclick="start()">Start AI Mentor</button>
+        if (text.includes("skill")) return "skill";
+        if (text.includes("career")) return "career";
+        if (text.includes("risk") || text.includes("problem")) return "mindset";
 
-</div>
-</div>
+        return "general";
+      }
 
-<script>
+      // UI helpers
+      function addUser(text) {
+        chat.innerHTML += `<div class="msg user">${text}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }
 
-const chat=document.getElementById("chat");
-const modal=document.getElementById("modal");
-const chatInputBox=document.getElementById("chatInputBox");
+      function addAI(html) {
+        chat.innerHTML += `<div class="msg ai">${html}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }
+      // 🔥 AI TYPING EFFECT
+      function typeAI(html) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "msg ai";
 
-// ⭐ Smart Context Brain
-function detectContext(text){
+        chat.appendChild(wrapper);
 
-text=text.toLowerCase();
+        let i = 0;
 
-if(text.includes("skill")) return "skill";
-if(text.includes("career")) return "career";
-if(text.includes("risk")||text.includes("problem")) return "mindset";
+        function type() {
+          if (i < html.length) {
+            wrapper.innerHTML += html.charAt(i);
+            i++;
+            chat.scrollTop = chat.scrollHeight;
+            setTimeout(type, 12); // typing speed (lower = faster)
+          }
+        }
 
-return "general";
-}
+        type();
+      }
 
-// UI helpers
-function addUser(text){
-chat.innerHTML+=`<div class="msg user">${text}</div>`;
-chat.scrollTop=chat.scrollHeight;
-}
+      // ⭐ FIRST LOAD
+      if (localStorage.getItem("userData")) {
+        modal.style.display = "none";
+        sendCareer(JSON.parse(localStorage.getItem("userData")));
+      }
+      function formatSteps(text) {
+        try {
+          const obj = JSON.parse(text);
 
-function addAI(html){
-chat.innerHTML+=`<div class="msg ai">${html}</div>`;
-chat.scrollTop=chat.scrollHeight;
-}
+          let html = "";
 
-// ⭐ FIRST LOAD
-if(localStorage.getItem("userData")){
-modal.style.display="none";
-sendCareer(JSON.parse(localStorage.getItem("userData")));
-}
+          for (const key in obj) {
+            html += `<h4>📌 ${key.replace("-", " ")}</h4><ul>`;
 
-// ⭐ START ONBOARDING
-function start(){
+            obj[key].goals.forEach((g) => {
+              html += `<li>${g}</li>`;
+            });
 
-const user={
-name:document.getElementById("name").value,
-age:document.getElementById("age").value,
-education:document.getElementById("education").value,
-interest:[document.getElementById("interest").value],
-goal:document.getElementById("goal").value,
-hobby:""
-};
+            html += "</ul>";
+          }
 
-localStorage.setItem("userData",JSON.stringify(user));
+          return html;
+        } catch (e) {
+          return `<div style="white-space:pre-line">${text}</div>`;
+        }
+      }
 
-modal.style.display="none";
+      // ⭐ START ONBOARDING
+      function start() {
+        const user = {
+          name: document.getElementById("name").value,
+          age: document.getElementById("age").value,
+          education: document.getElementById("education").value,
+          interest: [document.getElementById("interest").value],
+          goal: document.getElementById("goal").value,
+          hobby: "",
+        };
 
-sendCareer(user);
-}
+        localStorage.setItem("userData", JSON.stringify(user));
 
-// ⭐ FIRST CAREER AI CALL
-async function sendCareer(user){
+        modal.style.display = "none";
 
-addUser(`<b>${user.name}</b><br>${user.goal}`);
+        sendCareer(user);
+      }
 
-addAI(`<span class="typing">🤖 Deep analysing your profile...</span>`);
+      // ⭐ FIRST CAREER AI CALL
+      async function sendCareer(user) {
+        addUser(`<b>${user.name}</b><br>${user.goal}`);
 
-const res=await fetch("http://localhost:5000/career",{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body:JSON.stringify(user)
-});
+        addAI(`<span class="typing">🤖 Deep analysing your profile...</span>`);
 
-const data=await res.json();
+        const res = await fetch("http://localhost:5000/career", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        });
 
-chat.lastChild.remove();
+        const data = await res.json();
 
-let careerHTML="";
+        chat.lastChild.remove();
 
-data.careers.forEach(c=>{
-careerHTML+=`
+        let careerHTML = "";
+
+        data.careers.forEach((c) => {
+          careerHTML += `
 <div class="card">
 <b>🎯 ${c.name}</b><br>
 ${c.reason}<br>
-<span class="badge">${c.source}</span>
 </div>`;
-});
+        });
 
-addAI(`
+        typeAI(`
 <h3>🚀 Career Direction</h3>
 ${careerHTML}
 <h3>🧭 Roadmap</h3>
 <div style="white-space:pre-line">${data.steps}</div>
 `);
 
-// ⭐ ACTIVATE CHAT MODE AFTER FIRST RESPONSE
-chatInputBox.style.display="flex";
-}
+        // ⭐ ACTIVATE CHAT MODE AFTER FIRST RESPONSE
+        chatInputBox.style.display = "flex";
+      }
 
-// ⭐ FOLLOW-UP CHAT (SKILL / CAREER QUESTIONS)
-async function sendChat(){
+      // ⭐ FOLLOW-UP CHAT (SKILL / CAREER QUESTIONS)
+      async function sendChat() {
+        const input = document.getElementById("chatInput");
+        const message = input.value.trim();
 
-const input=document.getElementById("chatInput");
-const message=input.value.trim();
+        if (!message) return;
 
-if(!message) return;
+        const user = JSON.parse(localStorage.getItem("userData"));
 
-const user=JSON.parse(localStorage.getItem("userData"));
+        addUser(message);
 
-addUser(message);
+        input.value = "";
 
-input.value="";
+        addAI("<span class='typing'>🤖 Thinking...</span>");
 
-addAI("<span class='typing'>🤖 Thinking...</span>");
+        const contextType = detectContext(message);
 
-const contextType=detectContext(message);
+        const res = await fetch("http://localhost:5000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: user.name,
+            message: message,
+            type: contextType,
+          }),
+        });
 
-const res=await fetch("http://localhost:5000/chat",{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body:JSON.stringify({
-name:user.name,
-message:message,
-type:contextType
-})
-});
+        const data = await res.json();
 
-const data=await res.json();
+        chat.lastChild.remove();
 
-chat.lastChild.remove();
-
-addAI(`<div style="white-space:pre-line">${data.reply}</div>`);
-}
-
-</script>
-
-</body>
+        typeAI(`<div style="white-space:pre-line">${data.reply}</div>`);
+      }
+    </script>
+  </body>
 </html>

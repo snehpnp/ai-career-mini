@@ -117,8 +117,8 @@ app.post("/career", async (req, res) => {
     aiData = firewallAI(aiData, aiRaw);
 
     // ⭐ SAVE HISTORY
-    userData.history.push({ role: "user", text: JSON.stringify(user) });
-    userData.history.push({ role: "ai", text: aiData.steps });
+    userData.history.push({ role: "user",time:new Date(), text: JSON.stringify(user) });
+    userData.history.push({ role: "ai",time:new Date(),text: aiData.steps });
 
     saveUser(username, userData);
 
@@ -161,8 +161,8 @@ app.post("/chat", async (req, res) => {
     });
 
     // SAVE HISTORY
-    userData.history.push({ role: "user", text: message });
-    userData.history.push({ role: "ai", text: aiReply });
+    userData.history.push({ role: "user",time:new Date(), text: message });
+    userData.history.push({ role: "ai",time:new Date(), text: aiReply });
 
     saveUser(name.toLowerCase(), userData);
 
